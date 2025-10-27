@@ -5,8 +5,15 @@ public class PC_Controller : MonoBehaviour
 {
     [Header("Movement & Look")]
     public GameObject camHolder;
+    public GameObject pasword;
     public float speed = 5f;
     public float sensitiviti = 0.1f;
+    public bool panel;
+    public bool panelAct;
+
+    [Header("UI")]
+    public GameObject e;
+    public GameObject barraTexto;
 
     //Object References
     Rigidbody playerRb;
@@ -29,7 +36,40 @@ public class PC_Controller : MonoBehaviour
 
     void Update()
     {
-        Debug.DrawRay(camHolder.transform.position, camHolder.transform.forward * 3f, Color.red);
+        //Raycast
+
+        Ray ray = new Ray(camHolder.transform.position, camHolder.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 3f))
+        {
+            if (hit.collider.CompareTag("panel"))
+            {
+                panel = true;
+                e.gameObject.SetActive(true);
+            }
+            else
+            {
+                panel = false;
+                e.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            panel = false;
+            e.gameObject.SetActive(false);
+        }
+
+        //Barra de texto
+
+        if (panelAct)
+        {
+            barraTexto.gameObject.SetActive(true);
+        }
+        else
+        {
+            barraTexto.gameObject.SetActive(false);
+        }
     }
 
     //Movimiento
@@ -49,16 +89,20 @@ public class PC_Controller : MonoBehaviour
 
     void CameraLook()
     {
+        if (panelAct) return;
         transform.Rotate(Vector3.up * lookInput.x * sensitiviti);
         lookRotation += (-lookInput.y * sensitiviti);
-        lookRotation = Mathf.Clamp(lookRotation, -90, 90);
-        camHolder.transform.localEulerAngles = new Vector3(lookRotation, 0, 0);
+        lookRotation = Mathf.Clamp(lookRotation, -90f, 90f);
+
+        camHolder.transform.localEulerAngles = new Vector3(lookRotation, 0f, 0f);
     }
 
     private void LateUpdate()
     {
         CameraLook();
     }
+
+    //Input
 
     public void OnMove(InputAction.CallbackContext ctx)
     {
@@ -68,5 +112,13 @@ public class PC_Controller : MonoBehaviour
     public void OnLook(InputAction.CallbackContext ctx)
     {
         lookInput = ctx.ReadValue<Vector2>();
+    }
+
+    public void OnInteract(InputAction.CallbackContext ctx)
+    {
+        if (panel)
+        {
+            panelAct = !panelAct;
+        }
     }
 }
