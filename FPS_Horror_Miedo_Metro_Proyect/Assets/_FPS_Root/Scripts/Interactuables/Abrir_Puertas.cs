@@ -5,6 +5,7 @@ public class Abrir_Puertas : MonoBehaviour
 {
     public TMP_InputField inputField;
     public string accesKey;
+    public Animator anim;
 
     void Start()
     {
@@ -16,6 +17,7 @@ public class Abrir_Puertas : MonoBehaviour
         if (input == accesKey)
         {
             Debug.Log("Clave correcta");
+            anim.SetTrigger("Open");
         }
         else
         {

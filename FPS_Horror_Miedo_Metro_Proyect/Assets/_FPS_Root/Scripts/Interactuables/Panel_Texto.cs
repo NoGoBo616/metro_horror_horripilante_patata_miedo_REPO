@@ -14,7 +14,7 @@ public class Panel_Texto : MonoBehaviour
     {
         inputField.text = string.Empty;
     }
-
+    
     private System.Collections.IEnumerator ActivateInput()
     {
         yield return null;
