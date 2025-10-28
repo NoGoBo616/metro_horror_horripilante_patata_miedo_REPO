@@ -71,7 +71,7 @@ public class PC_Controller : MonoBehaviour
             barraTexto.gameObject.SetActive(false);
         }
     }
-
+    
     //Movimiento
 
     private void FixedUpdate()
@@ -81,6 +81,7 @@ public class PC_Controller : MonoBehaviour
 
     void Movement()
     {
+        if (panelAct) return;
         Vector3 movimiento = new Vector3(moveInput.x, 0, moveInput.y) * speed * Time.deltaTime;
         transform.Translate(movimiento);
     }
