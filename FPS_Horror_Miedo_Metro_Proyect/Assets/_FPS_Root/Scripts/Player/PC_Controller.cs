@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,10 +11,12 @@ public class PC_Controller : MonoBehaviour
     public float sensitiviti = 0.1f;
     public bool panel;
     public bool panelAct;
+    public EnnemyScript ennemyScript;
 
     [Header("UI")]
     public GameObject e;
     public GameObject barraTexto;
+    public GameObject jumpscare;
 
     //Object References
     Rigidbody playerRb;
@@ -121,5 +124,31 @@ public class PC_Controller : MonoBehaviour
         {
             panelAct = !panelAct;
         }
+    }
+
+    //Trigger
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Hide"))
+        {
+            Debug.Log("hide");
+            ennemyScript.Hide();
+        }
+    }
+
+    public void Jumpscare()
+    {
+        StartCoroutine(Scream());
+    }
+
+    //IE Numerators
+
+    public IEnumerator Scream()
+    {
+        jumpscare.SetActive(true);
+        yield return new WaitForSeconds(2);
+        Application.Quit();
+        yield return null;
     }
 }

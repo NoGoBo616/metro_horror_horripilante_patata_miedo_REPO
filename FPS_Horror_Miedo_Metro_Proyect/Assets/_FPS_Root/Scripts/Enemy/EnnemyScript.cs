@@ -7,7 +7,8 @@ public class EnnemyScript : MonoBehaviour
     public Transform pointA;
     public Transform pointB;
     public Transform player;
-    public Transform rayOrigin; // Empty desde donde saldrá el Raycast
+    public Transform rayOrigin;
+    public PC_Controller controller;
 
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public bool chasingPlayer = false;
@@ -62,6 +63,12 @@ public class EnnemyScript : MonoBehaviour
         }
     }
 
+    public void Hide()
+    {
+        chasingPlayer = false;
+        currentTarget = pointA.position;
+    }
+
     void ChasePlayer()
     {
         Vector3 dir = (player.position - transform.position).normalized;
@@ -73,8 +80,9 @@ public class EnnemyScript : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("screamer");
-        }
+            Debug.Log("scream");
+            controller.Jumpscare();
+        } 
     }
 
     //Dibuja un gizmo permanente en el editor para ver el raycast incluso sin ejecutar el juego
