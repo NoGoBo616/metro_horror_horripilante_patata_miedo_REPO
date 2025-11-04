@@ -86,4 +86,6 @@ public class EnnemyScript : MonoBehaviour
             Gizmos.DrawLine(rayOrigin.position, rayOrigin.position + rayOrigin.forward * 10f);
         }
     }
+
+
 }
