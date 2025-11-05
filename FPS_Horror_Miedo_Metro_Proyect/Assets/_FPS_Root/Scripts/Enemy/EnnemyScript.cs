@@ -10,10 +10,10 @@ public class EnnemyScript : MonoBehaviour
     public Transform rayOrigin;
     public PC_Controller controller;
 
-    [HideInInspector] public Rigidbody rb;
-    [HideInInspector] public bool chasingPlayer = false;
+    Rigidbody rb;
+    public bool chasingPlayer = false;
 
-    private Vector3 currentTarget;
+    public Vector3 currentTarget;
 
     void Start()
     {
@@ -65,8 +65,11 @@ public class EnnemyScript : MonoBehaviour
 
     public void Hide()
     {
-        chasingPlayer = false;
-        currentTarget = pointA.position;
+        if (chasingPlayer)
+        {
+            chasingPlayer = false;
+            currentTarget = pointA.position;
+        }
     }
 
     void ChasePlayer()
@@ -94,6 +97,4 @@ public class EnnemyScript : MonoBehaviour
             Gizmos.DrawLine(rayOrigin.position, rayOrigin.position + rayOrigin.forward * 10f);
         }
     }
-
-
 }
