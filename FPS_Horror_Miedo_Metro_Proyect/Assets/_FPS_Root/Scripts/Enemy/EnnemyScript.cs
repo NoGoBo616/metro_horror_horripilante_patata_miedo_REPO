@@ -71,6 +71,7 @@ public class EnnemyScript : MonoBehaviour
         {
             chasingPlayer = false;
             currentTarget = pointA.position;
+            anim.SetTrigger("Hide");
         }
     }
 
