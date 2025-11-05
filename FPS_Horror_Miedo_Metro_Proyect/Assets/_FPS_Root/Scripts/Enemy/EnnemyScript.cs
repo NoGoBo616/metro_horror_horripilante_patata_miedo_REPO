@@ -12,6 +12,7 @@ public class EnnemyScript : MonoBehaviour
 
     Rigidbody rb;
     public bool chasingPlayer = false;
+    public Animator anim;
 
     public Vector3 currentTarget;
 
@@ -46,6 +47,7 @@ public class EnnemyScript : MonoBehaviour
         {
             if (hit.transform == player)
             {
+                anim.SetTrigger("Attack");
                 chasingPlayer = true;
             }
         }
