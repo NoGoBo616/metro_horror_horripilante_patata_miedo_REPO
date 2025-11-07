@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnnemyScript : MonoBehaviour
@@ -10,11 +11,12 @@ public class EnnemyScript : MonoBehaviour
     public Transform rayOrigin;
     public PC_Controller controller;
 
-    Rigidbody rb;
+    private Rigidbody rb;
     public bool chasingPlayer = false;
     public Animator anim;
 
     public Vector3 currentTarget;
+    private bool isTurning = false; // Evita moverse mientras gira, pero no bloquea el raycast
 
     void Start()
     {
@@ -26,7 +28,12 @@ public class EnnemyScript : MonoBehaviour
     {
         if (player == null || rayOrigin == null) return;
 
-        // Si está persiguiendo al jugador
+        // Siempre lanzar el raycast, incluso si está girando
+        DoRaycast();
+
+        // No moverse mientras gira
+        if (isTurning) return;
+
         if (chasingPlayer)
         {
             ChasePlayer();
@@ -35,12 +42,13 @@ public class EnnemyScript : MonoBehaviour
         {
             Patrol();
         }
+    }
 
-        // Raycast para detectar al jugador
+    void DoRaycast()
+    {
         Vector3 origin = rayOrigin.position;
         Vector3 direction = rayOrigin.forward;
 
-        // Dibuja el raycast en el editor
         Debug.DrawRay(origin, direction * 10f, Color.red);
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, 10f))
@@ -61,8 +69,36 @@ public class EnnemyScript : MonoBehaviour
 
         if (Vector3.Distance(transform.position, currentTarget) < 0.5f)
         {
+            // Cambiar entre puntos A y B
             currentTarget = currentTarget == pointA.position ? pointB.position : pointA.position;
+
+            // Iniciar rotación lenta de 180° aleatoria
+            float randomRotation = Random.Range(0, 2) == 0 ? 180f : -180f;
+            StartCoroutine(SmoothTurn(randomRotation, 0.5f)); // Gira en 0.5 segundos
         }
+    }
+
+    IEnumerator SmoothTurn(float angle, float duration)
+    {
+        isTurning = true;
+
+        Quaternion startRot = transform.rotation;
+        Quaternion endRot = transform.rotation * Quaternion.Euler(0f, angle, 0f);
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / duration);
+            elapsed += Time.deltaTime;
+
+            // Permite que el raycast funcione incluso durante la rotación
+            DoRaycast();
+
+            yield return null;
+        }
+
+        transform.rotation = endRot;
+        isTurning = false;
     }
 
     public void Hide()
@@ -88,10 +124,9 @@ public class EnnemyScript : MonoBehaviour
         {
             Debug.Log("scream");
             controller.Jumpscare();
-        } 
+        }
     }
 
-    //Dibuja un gizmo permanente en el editor para ver el raycast incluso sin ejecutar el juego
     private void OnDrawGizmos()
     {
         if (rayOrigin != null)
