@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PC_Controller : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PC_Controller : MonoBehaviour
     public GameObject e;
     public GameObject barraTexto;
     public GameObject jumpscare;
+    public int sceneToLoad;
 
     //Object References
     Rigidbody playerRb;
@@ -148,7 +150,9 @@ public class PC_Controller : MonoBehaviour
     {
         jumpscare.SetActive(true);
         yield return new WaitForSeconds(2);
-        Application.Quit();
+        SceneManager.LoadScene(sceneToLoad);
+        ennemyScript.Hide();
+        jumpscare.SetActive(false);
         yield return null;
     }
 }
